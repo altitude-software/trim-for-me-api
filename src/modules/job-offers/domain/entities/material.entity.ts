@@ -24,6 +24,10 @@ export class Material {
         return new Material(props);
     }
 
+    static reconstitute(props: Required<MaterialProps>): Material {
+        return new Material(props);
+    }
+
     // Getters
     get url(): string | null { return this._url; }
     get type(): string | null { return this._type; }

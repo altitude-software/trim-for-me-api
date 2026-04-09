@@ -43,6 +43,10 @@ export class JobOffer {
         return new JobOffer(props);
     }
 
+    static reconstitute(props: Required<JobOfferProps>): JobOffer {
+        return new JobOffer(props);
+    }
+
     // Getters
     get materials(): Material[] { return [...this._materials]; }
     get videoFormat(): VideoFormat | null { return this._videoFormat; }

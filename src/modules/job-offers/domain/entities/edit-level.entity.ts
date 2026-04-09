@@ -24,6 +24,10 @@ export class EditLevel {
         return new EditLevel(props);
     }
 
+    static reconstitute(props: Required<EditLevelProps>): EditLevel {
+        return new EditLevel(props);
+    }
+
     // Getters
     get level(): EditLevelType { return this._level; }
 }
