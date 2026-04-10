@@ -34,6 +34,10 @@ export class VideoFormat {
         return new VideoFormat(props);
     }
 
+    static reconstitute(props: Required<VideoFormatProps>): VideoFormat {
+        return new VideoFormat(props);
+    }
+
     // Getters
     get orientation(): VideoOrientation { return this._orientation; }
     get length(): VideoLength { return this._length; }

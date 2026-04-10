@@ -34,6 +34,10 @@ export class Compensation {
         return new Compensation(props);
     }
 
+    static reconstitute(props: Required<CompensationProps>): Compensation {
+        return new Compensation(props);
+    }
+
     private validate(): void {
         const requiresAmount =
             this._type !== CompensationType.NEGOTIABLE;

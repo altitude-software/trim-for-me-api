@@ -39,6 +39,10 @@ export class User {
         return new User(props);
     }
 
+    static reconstitute(props: Required<UserProps>): User {
+        return new User(props);
+    }
+
     // Getters
     get email(): Email { return this._email; }
     get password(): string { return this._password; }
