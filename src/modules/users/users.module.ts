@@ -17,6 +17,8 @@ import { AuthController } from './infrastructure/http/auth.controller';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { LoginUserUseCase } from './application/use-cases/login-user.use-case';
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
+import { GetUserByIdUseCase } from './application/use-cases/get-user-by-id.use-case';
+import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 
 @Module({
     imports: [
@@ -30,6 +32,8 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.use-case'
         CreateUserUseCase,
         LoginUserUseCase,
         UpdateUserUseCase,
+        GetUserByIdUseCase,
+        DeleteUserUseCase,
     ],
     exports: ['IUserRepository'],
 })

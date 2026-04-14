@@ -93,6 +93,39 @@ npm run migration:revert
 
 ---
 
+## API Documentation
+
+This project uses **Swagger / OpenAPI** to document all available endpoints.
+
+### Accessing the docs
+
+Start the server and open the following URL in your browser:
+
+```
+http://localhost:3000/api/docs
+```
+
+### Available tags
+
+| Tag | Description |
+|-----|-------------|
+| `auth` | Authentication — login and JWT token retrieval |
+| `users` | User registration and management |
+| `job-offers` | Job offer creation and management |
+
+### Authenticating in Swagger UI
+
+Most endpoints require a JWT token. To authenticate:
+
+1. Call `POST /auth/login` with your credentials
+2. Copy the token from the response
+3. Click the **Authorize** button (🔒) at the top right of the Swagger UI
+4. Paste the token and click **Authorize**
+
+All subsequent requests from Swagger UI will include the token automatically.
+
+---
+
 ## Run tests
 
 ```bash

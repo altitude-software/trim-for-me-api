@@ -6,13 +6,13 @@ import { SharedModule } from '../../shared/shared.module';
 
 // Infraestructura — TypeORM
 import {
-    JobOfferEntity,
-    MaterialEntity,
-    VideoFormatEntity,
-    EditLevelEntity,
-    CompensationEntity,
+    JobOfferEntity
 } from './infrastructure/persistence/typeorm/job-offer.typeorm-entity';
 import { TypeOrmJobOfferRepository } from './infrastructure/persistence/typeorm/job-offer.typeorm-repository';
+import { MaterialEntity } from './infrastructure/persistence/typeorm/material.typeorm-entity';
+import { VideoFormatEntity } from './infrastructure/persistence/typeorm/video-format.typeorm-entity';
+import { EditLevelEntity } from './infrastructure/persistence/typeorm/edit-level.typeorm-entity';
+import { CompensationEntity } from './infrastructure/persistence/typeorm/compensation.typeorm-entity';
 
 // Infraestructura — HTTP
 import { JobOffersController } from './infrastructure/http/job-offers.controller';
