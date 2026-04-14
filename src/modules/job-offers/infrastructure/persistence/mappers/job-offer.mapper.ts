@@ -6,15 +6,23 @@ import { Compensation, CompensationType } from '../../../domain/entities/compens
 import { Uuid } from '../../../../../shared/domain/value-objects/uuid.vo';
 import {
     JobOfferEntity,
+} from '../typeorm/job-offer.typeorm-entity';
+import {
     MaterialEntity,
+} from '../typeorm/material.typeorm-entity';
+import {
     VideoFormatEntity,
-    EditLevelEntity,
-    CompensationEntity,
     VideoOrientationORM,
     VideoLengthORM,
+} from '../typeorm/video-format.typeorm-entity';
+import {
+    EditLevelEntity,
     EditLevelORM,
+} from '../typeorm/edit-level.typeorm-entity';
+import {
+    CompensationEntity,
     CompensationTypeORM,
-} from '../typeorm/job-offer.typeorm-entity';
+} from '../typeorm/compensation.typeorm-entity';
 
 export class JobOfferMapper {
     // ─── ORM → Dominio ──────────────────────────────────────────────────────────
