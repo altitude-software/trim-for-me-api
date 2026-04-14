@@ -96,3 +96,64 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+## Running Locally with Docker
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Node.js 18+
+- Copy `.env.example` to `.env` and fill in your values
+
+### Start the database
+
+```bash
+docker compose up -d
+```
+
+Verify it's running:
+```bash
+docker compose ps
+```
+
+### Run migrations
+
+```bash
+npm run migration:run
+```
+
+### Start the API
+
+```bash
+npm run start:dev
+```
+
+---
+
+## Migrations
+
+Migrations live in `src/shared/infrastructure/database/migrations/` and are the only way the schema is created or modified (`synchronize: false`).
+
+### Daily workflow
+
+```bash
+# 1. Start the database
+docker compose up -d
+
+# 2. After modifying a TypeORM entity, generate a new migration
+npm run migration:generate src/shared/infrastructure/database/migrations/DescriptiveName
+
+# 3. Apply pending migrations
+npm run migration:run
+
+# Undo the last migration if something went wrong
+npm run migration:revert
+```
+
+### Available scripts
+
+| Script | Description |
+|---|---|
+| `migration:generate` | Compares entities against DB and generates the diff as a `.ts` file |
+| `migration:run` | Executes all pending migrations |
+| `migration:revert` | Undoes the last executed migration |
