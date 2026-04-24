@@ -3,7 +3,7 @@
 - **Estado:** Propuesto
 - **Fecha:** 2026-04-06
 - **Autor(es):** José Manuel Cornejo Lupa
-- **Revisor(es):**
+- **Revisor(es):** Angel Jose Sucapuca Diaz
 
 ---
 
