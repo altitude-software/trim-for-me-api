@@ -42,5 +42,6 @@ jobs:
 
       - name: Restart with pm2
         run: |
+          export RUNNER_TRACKING_ID=0
           pm2 restart trim-for-me-api --update-env || pm2 start dist/main.js --name trim-for-me-api
           pm2 save
