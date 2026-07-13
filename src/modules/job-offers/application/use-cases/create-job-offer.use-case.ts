@@ -1,8 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { JobOffer } from '../../domain/entities/job-offer.entity';
 import { Material } from '../../domain/entities/material.entity';
-import { VideoFormat } from '../../domain/entities/video-format.entity';
-import { EditLevel } from '../../domain/entities/edit-level.entity';
 import { Compensation } from '../../domain/entities/compensation.entity';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { CreateJobOfferDto } from '../dtos/create-job-offer.dto';
@@ -20,42 +18,32 @@ export class CreateJobOfferUseCase {
     async execute(creatorId: string, dto: CreateJobOfferDto): Promise<JobOfferResponseDto> {
         const jobOffer = JobOffer.create({
             creatorId: new Uuid(creatorId),
+            name: dto.name,
             description: dto.description ?? null,
+            orientation: dto.orientation,
+            length: dto.length,
+            level: dto.level,
+            compensation: dto.compensationType
+                ? Compensation.create({
+                    type: dto.compensationType,
+                    durationInMinutes: dto.durationInMinutes ?? null,
+                    amount: dto.amount ?? null,
+                    currency: dto.currency ?? null,
+                })
+                : null,
         });
 
         // Materials
         const materials = (dto.materials ?? []).map((m) =>
             Material.create({
                 url: m.url ?? null,
-                type: m.type ?? null,
+                type: m.type ? new Uuid(m.type) : null,
                 description: m.description ?? null,
+                duration: m.duration ?? null,
+                quantity: m.quantity ?? null,
             }),
         );
         materials.forEach((m) => jobOffer.addMaterial(m));
-
-        // VideoFormat
-        jobOffer.setVideoFormat(
-            VideoFormat.create({
-                orientation: dto.orientation,
-                length: dto.length,
-                technicalFormat: dto.technicalFormat ?? null,
-            }),
-        );
-
-        // EditLevel
-        jobOffer.setEditLevel(
-            EditLevel.create({ level: dto.level }),
-        );
-
-        // Compensation
-        jobOffer.setCompensation(
-            Compensation.create({
-                type: dto.compensationType,
-                durationInMinutes: dto.durationInMinutes ?? null,
-                amount: dto.amount ?? null,
-                currency: dto.currency ?? null,
-            }),
-        );
 
         await this.jobOfferRepository.save(jobOffer);
 
@@ -66,27 +54,27 @@ export class CreateJobOfferUseCase {
         return {
             id: jobOffer.id.value,
             creatorId: jobOffer.creatorId.value,
+            name: jobOffer.name,
             description: jobOffer.description,
             materials: jobOffer.materials.map((m) => ({
                 id: m.id.value,
                 url: m.url,
-                type: m.type,
+                type: m.type?.value ?? null,
                 description: m.description,
+                duration: m.duration,
+                quantity: m.quantity,
             })),
-            videoFormat: {
-                orientation: jobOffer.videoFormat!.orientation,
-                length: jobOffer.videoFormat!.length,
-                technicalFormat: jobOffer.videoFormat!.technicalFormat,
-            },
-            editLevel: {
-                level: jobOffer.editLevel!.level,
-            },
-            compensation: {
-                type: jobOffer.compensation!.type,
-                durationInMinutes: jobOffer.compensation!.durationInMinutes,
-                amount: jobOffer.compensation!.amount,
-                currency: jobOffer.compensation!.currency,
-            },
+            orientation: jobOffer.orientation,
+            length: jobOffer.length,
+            level: jobOffer.level,
+            compensation: jobOffer.compensation
+                ? {
+                    type: jobOffer.compensation.type,
+                    durationInMinutes: jobOffer.compensation.durationInMinutes,
+                    amount: jobOffer.compensation.amount,
+                    currency: jobOffer.compensation.currency,
+                }
+                : null,
             createdAt: jobOffer.createdAt,
             updatedAt: jobOffer.updatedAt,
         };

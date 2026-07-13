@@ -1,20 +1,28 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { EditLevelType } from '../../domain/entities/edit-level.entity';
+import { VideoOrientation, VideoLength, EditLevelType } from '../../domain/entities/job-offer.entity';
 import { CompensationType } from '../../domain/entities/compensation.entity';
-import { VideoOrientation, VideoLength } from '../../domain/entities/video-format.entity';
 
 export class MaterialDto {
     @ApiPropertyOptional({ example: 'https://storage.com/video.mp4' })
     url?: string | null;
 
-    @ApiPropertyOptional({ example: 'reference' })
+    @ApiPropertyOptional({ example: 'b3f1c2d4-...' })
     type?: string | null;
 
     @ApiPropertyOptional({ example: 'Video de referencia de estilo' })
     description?: string | null;
+
+    @ApiPropertyOptional({ example: 120 })
+    duration?: number | null;
+
+    @ApiPropertyOptional({ example: 3 })
+    quantity?: number | null;
 }
 
 export class CreateJobOfferDto {
+    @ApiProperty({ example: 'Editor para canal de YouTube' })
+    name!: string;
+
     @ApiPropertyOptional({ example: 'Necesito editor para canal de YouTube' })
     description?: string;
 
@@ -27,14 +35,11 @@ export class CreateJobOfferDto {
     @ApiProperty({ enum: VideoLength, example: VideoLength.LONG })
     length!: VideoLength;
 
-    @ApiPropertyOptional({ example: 'H.264' })
-    technicalFormat?: string;
-
     @ApiProperty({ enum: EditLevelType, example: EditLevelType.INTERMEDIATE })
     level!: EditLevelType;
 
-    @ApiProperty({ enum: CompensationType, example: CompensationType.PER_VIDEO })
-    compensationType!: CompensationType;
+    @ApiPropertyOptional({ enum: CompensationType, example: CompensationType.PER_VIDEO })
+    compensationType?: CompensationType;
 
     @ApiPropertyOptional({ example: 10 })
     durationInMinutes?: number;

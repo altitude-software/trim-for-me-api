@@ -1,7 +1,5 @@
 import { GetJobOffersByCreatorUseCase } from '../get-job-offers-by-creator.use-case';
-import { JobOffer } from '../../../domain/entities/job-offer.entity';
-import { VideoFormat, VideoOrientation, VideoLength } from '../../../domain/entities/video-format.entity';
-import { EditLevel, EditLevelType } from '../../../domain/entities/edit-level.entity';
+import { JobOffer, VideoOrientation, VideoLength, EditLevelType } from '../../../domain/entities/job-offer.entity';
 import { Compensation, CompensationType } from '../../../domain/entities/compensation.entity';
 import { Uuid } from '../../../../../shared/domain/value-objects/uuid.vo';
 import type { IJobOfferRepository } from '../../../domain/repositories/job-offer.repository';
@@ -17,9 +15,11 @@ const makeJobOffer = (creatorId: Uuid) =>
     JobOffer.reconstitute({
         id: new Uuid(),
         creatorId,
+        name: 'Test offer',
         materials: [],
-        videoFormat: VideoFormat.create({ orientation: VideoOrientation.HORIZONTAL, length: VideoLength.SHORT }),
-        editLevel: EditLevel.create({ level: EditLevelType.BASIC }),
+        orientation: VideoOrientation.HORIZONTAL,
+        length: VideoLength.SHORT,
+        level: EditLevelType.BASIC,
         compensation: Compensation.create({ type: CompensationType.NEGOTIABLE }),
         description: 'Test offer',
         createdAt: new Date(),
@@ -61,9 +61,10 @@ describe('GetJobOffersByCreatorUseCase', () => {
         const result = await useCase.execute({ creatorId: creatorId.value });
 
         expect(result[0].id).toBe(jobOffer.id.value);
+        expect(result[0].name).toBe('Test offer');
         expect(result[0].description).toBe('Test offer');
-        expect(result[0].videoFormat.orientation).toBe(VideoOrientation.HORIZONTAL);
-        expect(result[0].editLevel.level).toBe(EditLevelType.BASIC);
-        expect(result[0].compensation.type).toBe(CompensationType.NEGOTIABLE);
+        expect(result[0].orientation).toBe(VideoOrientation.HORIZONTAL);
+        expect(result[0].level).toBe(EditLevelType.BASIC);
+        expect(result[0].compensation!.type).toBe(CompensationType.NEGOTIABLE);
     });
 });

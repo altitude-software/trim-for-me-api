@@ -1,10 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { EditLevelType } from '../../domain/entities/edit-level.entity';
+import { VideoOrientation, VideoLength, EditLevelType } from '../../domain/entities/job-offer.entity';
 import { CompensationType } from '../../domain/entities/compensation.entity';
-import { VideoOrientation, VideoLength } from '../../domain/entities/video-format.entity';
 import { MaterialDto } from './create-job-offer.dto';
 
 export class UpdateJobOfferDto {
+    @ApiPropertyOptional({ example: 'Editor para canal de YouTube' })
+    name?: string;
+
     @ApiPropertyOptional({ example: 'Descripción actualizada' })
     description?: string;
 
@@ -16,9 +18,6 @@ export class UpdateJobOfferDto {
 
     @ApiPropertyOptional({ enum: VideoLength })
     length?: VideoLength;
-
-    @ApiPropertyOptional({ example: '16:33' })
-    technicalFormat?: string;
 
     @ApiPropertyOptional({ enum: EditLevelType })
     level?: EditLevelType;

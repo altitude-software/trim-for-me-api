@@ -22,23 +22,19 @@ export class GetJobOffersByCreatorUseCase {
         return {
             id: jobOffer.id.value,
             creatorId: jobOffer.creatorId.value,
+            name: jobOffer.name,
             description: jobOffer.description,
             materials: jobOffer.materials.map((m) => ({
                 id: m.id.value,
                 url: m.url,
-                type: m.type,
+                type: m.type?.value ?? null,
                 description: m.description,
+                duration: m.duration,
+                quantity: m.quantity,
             })),
-            videoFormat: jobOffer.videoFormat
-                ? {
-                    orientation: jobOffer.videoFormat.orientation,
-                    length: jobOffer.videoFormat.length,
-                    technicalFormat: jobOffer.videoFormat.technicalFormat,
-                }
-                : null!,
-            editLevel: jobOffer.editLevel
-                ? { level: jobOffer.editLevel.level }
-                : null!,
+            orientation: jobOffer.orientation,
+            length: jobOffer.length,
+            level: jobOffer.level,
             compensation: jobOffer.compensation
                 ? {
                     type: jobOffer.compensation.type,
@@ -46,7 +42,7 @@ export class GetJobOffersByCreatorUseCase {
                     amount: jobOffer.compensation.amount,
                     currency: jobOffer.compensation.currency,
                 }
-                : null!,
+                : null,
             createdAt: jobOffer.createdAt,
             updatedAt: jobOffer.updatedAt,
         };

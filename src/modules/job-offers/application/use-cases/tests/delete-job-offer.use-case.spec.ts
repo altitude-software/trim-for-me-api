@@ -1,6 +1,6 @@
 import { DeleteJobOfferUseCase } from '../delete-job-offer.use-case';
 import { JobOfferNotFoundException } from '../../../domain/exceptions/job-offer-not-found.exception';
-import { JobOffer } from '../../../domain/entities/job-offer.entity';
+import { JobOffer, VideoOrientation, VideoLength, EditLevelType } from '../../../domain/entities/job-offer.entity';
 import { Uuid } from '../../../../../shared/domain/value-objects/uuid.vo';
 import type { IJobOfferRepository } from '../../../domain/repositories/job-offer.repository';
 
@@ -15,9 +15,11 @@ const makeJobOffer = (creatorId: Uuid) =>
     JobOffer.reconstitute({
         id: new Uuid(),
         creatorId,
+        name: 'Test offer',
         materials: [],
-        videoFormat: null,
-        editLevel: null,
+        orientation: VideoOrientation.HORIZONTAL,
+        length: VideoLength.SHORT,
+        level: EditLevelType.BASIC,
         compensation: null,
         description: null,
         createdAt: new Date(),

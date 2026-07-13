@@ -1,23 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EditLevelType } from '../../domain/entities/edit-level.entity';
+import { VideoOrientation, VideoLength, EditLevelType } from '../../domain/entities/job-offer.entity';
 import { CompensationType } from '../../domain/entities/compensation.entity';
-import { VideoOrientation, VideoLength } from '../../domain/entities/video-format.entity';
 
 export class MaterialResponseDto {
     @ApiProperty() id!: string;
     @ApiProperty({ nullable: true }) url!: string | null;
     @ApiProperty({ nullable: true }) type!: string | null;
     @ApiProperty({ nullable: true }) description!: string | null;
-}
-
-export class VideoFormatResponseDto {
-    @ApiProperty({ enum: VideoOrientation }) orientation!: VideoOrientation;
-    @ApiProperty({ enum: VideoLength }) length!: VideoLength;
-    @ApiProperty({ nullable: true }) technicalFormat!: string | null;
-}
-
-export class EditLevelResponseDto {
-    @ApiProperty({ enum: EditLevelType }) level!: EditLevelType;
+    @ApiProperty({ nullable: true }) duration!: number | null;
+    @ApiProperty({ nullable: true }) quantity!: number | null;
 }
 
 export class CompensationResponseDto {
@@ -30,11 +21,13 @@ export class CompensationResponseDto {
 export class JobOfferResponseDto {
     @ApiProperty() id!: string;
     @ApiProperty() creatorId!: string;
+    @ApiProperty() name!: string;
     @ApiProperty({ nullable: true }) description!: string | null;
     @ApiProperty({ type: [MaterialResponseDto] }) materials!: MaterialResponseDto[];
-    @ApiProperty({ type: VideoFormatResponseDto }) videoFormat!: VideoFormatResponseDto;
-    @ApiProperty({ type: EditLevelResponseDto }) editLevel!: EditLevelResponseDto;
-    @ApiProperty({ type: CompensationResponseDto }) compensation!: CompensationResponseDto;
+    @ApiProperty({ enum: VideoOrientation }) orientation!: VideoOrientation;
+    @ApiProperty({ enum: VideoLength }) length!: VideoLength;
+    @ApiProperty({ enum: EditLevelType }) level!: EditLevelType;
+    @ApiProperty({ type: CompensationResponseDto, nullable: true }) compensation!: CompensationResponseDto | null;
     @ApiProperty() createdAt!: Date;
     @ApiProperty() updatedAt!: Date;
 }

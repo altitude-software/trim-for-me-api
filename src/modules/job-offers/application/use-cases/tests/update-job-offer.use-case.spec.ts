@@ -1,9 +1,7 @@
 // update-job-offer.use-case.spec.ts
 import { UpdateJobOfferUseCase } from '../update-job-offer.use-case';
 import { JobOfferNotFoundException } from '../../../domain/exceptions/job-offer-not-found.exception';
-import { JobOffer } from '../../../domain/entities/job-offer.entity';
-import { VideoFormat, VideoOrientation, VideoLength } from '../../../domain/entities/video-format.entity';
-import { EditLevel, EditLevelType } from '../../../domain/entities/edit-level.entity';
+import { JobOffer, VideoOrientation, VideoLength, EditLevelType } from '../../../domain/entities/job-offer.entity';
 import { Compensation, CompensationType } from '../../../domain/entities/compensation.entity';
 import { Uuid } from '../../../../../shared/domain/value-objects/uuid.vo';
 import type { IJobOfferRepository } from '../../../domain/repositories/job-offer.repository';
@@ -19,9 +17,11 @@ const makeJobOffer = (creatorId: Uuid) =>
     JobOffer.reconstitute({
         id: new Uuid(),
         creatorId,
+        name: 'Original name',
         materials: [],
-        videoFormat: VideoFormat.create({ orientation: VideoOrientation.HORIZONTAL, length: VideoLength.SHORT }),
-        editLevel: EditLevel.create({ level: EditLevelType.BASIC }),
+        orientation: VideoOrientation.HORIZONTAL,
+        length: VideoLength.SHORT,
+        level: EditLevelType.BASIC,
         compensation: Compensation.create({ type: CompensationType.NEGOTIABLE }),
         description: 'Original description',
         createdAt: new Date(),
@@ -35,6 +35,18 @@ describe('UpdateJobOfferUseCase', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         useCase = new UpdateJobOfferUseCase(mockJobOfferRepository);
+    });
+
+    it('should update name successfully', async () => {
+        const jobOffer = makeJobOffer(creatorId);
+        mockJobOfferRepository.findById.mockResolvedValue(jobOffer);
+        mockJobOfferRepository.save.mockResolvedValue(undefined);
+
+        const result = await useCase.execute(creatorId.value, jobOffer.id.value, {
+            name: 'Updated name',
+        });
+
+        expect(result.name).toBe('Updated name');
     });
 
     it('should update description successfully', async () => {
@@ -58,7 +70,7 @@ describe('UpdateJobOfferUseCase', () => {
             level: EditLevelType.ADVANCED,
         });
 
-        expect(result.editLevel.level).toBe(EditLevelType.ADVANCED);
+        expect(result.level).toBe(EditLevelType.ADVANCED);
     });
 
     it('should update compensation successfully', async () => {
@@ -72,8 +84,8 @@ describe('UpdateJobOfferUseCase', () => {
             currency: 'USD',
         });
 
-        expect(result.compensation.type).toBe(CompensationType.PER_VIDEO);
-        expect(result.compensation.amount).toBe(200);
+        expect(result.compensation!.type).toBe(CompensationType.PER_VIDEO);
+        expect(result.compensation!.amount).toBe(200);
     });
 
     it('should throw JobOfferNotFoundException when job offer does not exist', async () => {

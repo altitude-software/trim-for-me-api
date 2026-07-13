@@ -1,9 +1,23 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { UserEntity } from '../../../../users/infrastructure/persistence/typeorm/user.typeorm-entity';
 import { MaterialEntity } from './material.typeorm-entity';
-import { VideoFormatEntity } from './video-format.typeorm-entity';
-import { EditLevelEntity } from './edit-level.typeorm-entity';
 import { CompensationEntity } from './compensation.typeorm-entity';
+
+export enum VideoOrientationORM {
+    VERTICAL = 'vertical',
+    HORIZONTAL = 'horizontal',
+}
+
+export enum VideoLengthORM {
+    SHORT = 'short',
+    LONG = 'long',
+}
+
+export enum EditLevelORM {
+    BASIC = 'basic',
+    INTERMEDIATE = 'intermediate',
+    ADVANCED = 'advanced',
+}
 
 @Entity('JOB_OFFER')
 export class JobOfferEntity {
@@ -13,7 +27,10 @@ export class JobOfferEntity {
     @Column({ name: 'creator_id' })
     creatorId!: string;
 
-    @Column({ nullable: true, type: 'varchar' })
+    @Column({ type: 'varchar' })
+    name!: string;
+
+    @Column({ nullable: true, type: 'varchar', default: null })
     description!: string | null;
 
     @ManyToOne(() => UserEntity, (user) => user.jobOffers)
@@ -23,17 +40,18 @@ export class JobOfferEntity {
     @OneToMany(() => MaterialEntity, (material) => material.jobOffer, { cascade: true, eager: true })
     materials!: MaterialEntity[];
 
-    @OneToOne(() => VideoFormatEntity, (vf) => vf.jobOffer, { cascade: true, eager: true })
-    @JoinColumn({ name: 'video_format_id' })
-    videoFormat!: VideoFormatEntity;
+    @Column({ type: 'enum', enum: VideoOrientationORM, default: VideoOrientationORM.HORIZONTAL })
+    orientation!: VideoOrientationORM;
 
-    @OneToOne(() => EditLevelEntity, (el) => el.jobOffer, { cascade: true, eager: true })
-    @JoinColumn({ name: 'edit_level_id' })
-    editLevel!: EditLevelEntity;
+    @Column({ type: 'enum', enum: VideoLengthORM, default: VideoLengthORM.LONG })
+    length!: VideoLengthORM;
 
-    @OneToOne(() => CompensationEntity, (c) => c.jobOffer, { cascade: true, eager: true })
+    @Column({ type: 'enum', enum: EditLevelORM, default: EditLevelORM.INTERMEDIATE })
+    level!: EditLevelORM;
+
+    @OneToOne(() => CompensationEntity, (c) => c.jobOffer, { cascade: true, eager: true, nullable: true })
     @JoinColumn({ name: 'compensation_id' })
-    compensation!: CompensationEntity;
+    compensation!: CompensationEntity | null;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;

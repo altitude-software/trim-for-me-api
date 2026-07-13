@@ -1,8 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { IJobOfferRepository } from '../../domain/repositories/job-offer.repository';
 import { Material } from '../../domain/entities/material.entity';
-import { VideoFormat } from '../../domain/entities/video-format.entity';
-import { EditLevel } from '../../domain/entities/edit-level.entity';
 import { Compensation } from '../../domain/entities/compensation.entity';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { JobOfferNotFoundException } from '../../domain/exceptions/job-offer-not-found.exception';
@@ -30,6 +28,10 @@ export class UpdateJobOfferUseCase {
             throw new Error('Unauthorized: only the creator can update this job offer');
         }
 
+        if (dto.name !== undefined) {
+            jobOffer.setName(dto.name);
+        }
+
         if (dto.description !== undefined) {
             jobOffer.setDescription(dto.description);
         }
@@ -40,34 +42,34 @@ export class UpdateJobOfferUseCase {
                 jobOffer.addMaterial(
                     Material.create({
                         url: m.url ?? null,
-                        type: m.type ?? null,
+                        type: m.type ? new Uuid(m.type) : null,
                         description: m.description ?? null,
+                        duration: m.duration ?? null,
+                        quantity: m.quantity ?? null,
                     }),
                 ),
             );
         }
 
-        if (dto.orientation !== undefined || dto.length !== undefined) {
-            jobOffer.setVideoFormat(
-                VideoFormat.create({
-                    orientation: dto.orientation ?? jobOffer.videoFormat!.orientation,
-                    length: dto.length ?? jobOffer.videoFormat!.length,
-                    technicalFormat: dto.technicalFormat ?? jobOffer.videoFormat!.technicalFormat,
-                }),
-            );
+        if (dto.orientation !== undefined) {
+            jobOffer.setOrientation(dto.orientation);
+        }
+
+        if (dto.length !== undefined) {
+            jobOffer.setLength(dto.length);
         }
 
         if (dto.level !== undefined) {
-            jobOffer.setEditLevel(EditLevel.create({ level: dto.level }));
+            jobOffer.setLevel(dto.level);
         }
 
         if (dto.compensationType !== undefined) {
             jobOffer.setCompensation(
                 Compensation.create({
                     type: dto.compensationType,
-                    durationInMinutes: dto.durationInMinutes ?? jobOffer.compensation!.durationInMinutes,
-                    amount: dto.amount ?? jobOffer.compensation!.amount,
-                    currency: dto.currency ?? jobOffer.compensation!.currency,
+                    durationInMinutes: dto.durationInMinutes ?? jobOffer.compensation?.durationInMinutes ?? null,
+                    amount: dto.amount ?? jobOffer.compensation?.amount ?? null,
+                    currency: dto.currency ?? jobOffer.compensation?.currency ?? null,
                 }),
             );
         }
@@ -80,25 +82,27 @@ export class UpdateJobOfferUseCase {
         return {
             id: jobOffer.id.value,
             creatorId: jobOffer.creatorId.value,
+            name: jobOffer.name,
             description: jobOffer.description,
             materials: jobOffer.materials.map((m) => ({
                 id: m.id.value,
                 url: m.url,
-                type: m.type,
+                type: m.type?.value ?? null,
                 description: m.description,
+                duration: m.duration,
+                quantity: m.quantity,
             })),
-            videoFormat: {
-                orientation: jobOffer.videoFormat!.orientation,
-                length: jobOffer.videoFormat!.length,
-                technicalFormat: jobOffer.videoFormat!.technicalFormat,
-            },
-            editLevel: { level: jobOffer.editLevel!.level },
-            compensation: {
-                type: jobOffer.compensation!.type,
-                durationInMinutes: jobOffer.compensation!.durationInMinutes,
-                amount: jobOffer.compensation!.amount,
-                currency: jobOffer.compensation!.currency,
-            },
+            orientation: jobOffer.orientation,
+            length: jobOffer.length,
+            level: jobOffer.level,
+            compensation: jobOffer.compensation
+                ? {
+                    type: jobOffer.compensation.type,
+                    durationInMinutes: jobOffer.compensation.durationInMinutes,
+                    amount: jobOffer.compensation.amount,
+                    currency: jobOffer.compensation.currency,
+                }
+                : null,
             createdAt: jobOffer.createdAt,
             updatedAt: jobOffer.updatedAt,
         };

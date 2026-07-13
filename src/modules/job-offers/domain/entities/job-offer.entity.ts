@@ -1,15 +1,31 @@
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { Material } from './material.entity';
-import { VideoFormat } from './video-format.entity';
-import { EditLevel } from './edit-level.entity';
 import { Compensation } from './compensation.entity';
+
+export enum VideoOrientation {
+    VERTICAL = 'vertical',
+    HORIZONTAL = 'horizontal',
+}
+
+export enum VideoLength {
+    SHORT = 'short',
+    LONG = 'long',
+}
+
+export enum EditLevelType {
+    BASIC = 'basic',
+    INTERMEDIATE = 'intermediate',
+    ADVANCED = 'advanced',
+}
 
 export interface JobOfferProps {
     id?: Uuid;
     creatorId: Uuid;
+    name: string;
     materials?: Material[];
-    videoFormat?: VideoFormat | null;
-    editLevel?: EditLevel | null;
+    orientation?: VideoOrientation;
+    length?: VideoLength;
+    level?: EditLevelType;
     compensation?: Compensation | null;
     description?: string | null;
     createdAt?: Date;
@@ -19,9 +35,11 @@ export interface JobOfferProps {
 export class JobOffer {
     readonly id: Uuid;
     readonly creatorId: Uuid;
+    private _name: string;
     private _materials: Material[];
-    private _videoFormat: VideoFormat | null;
-    private _editLevel: EditLevel | null;
+    private _orientation: VideoOrientation;
+    private _length: VideoLength;
+    private _level: EditLevelType;
     private _compensation: Compensation | null;
     private _description: string | null;
     readonly createdAt: Date;
@@ -30,9 +48,11 @@ export class JobOffer {
     private constructor(props: JobOfferProps) {
         this.id = props.id ?? new Uuid();
         this.creatorId = props.creatorId;
+        this._name = props.name;
         this._materials = props.materials ?? [];
-        this._videoFormat = props.videoFormat ?? null;
-        this._editLevel = props.editLevel ?? null;
+        this._orientation = props.orientation ?? VideoOrientation.HORIZONTAL;
+        this._length = props.length ?? VideoLength.LONG;
+        this._level = props.level ?? EditLevelType.INTERMEDIATE;
         this._compensation = props.compensation ?? null;
         this._description = props.description ?? null;
         this.createdAt = props.createdAt ?? new Date();
@@ -48,9 +68,11 @@ export class JobOffer {
     }
 
     // Getters
+    get name(): string { return this._name; }
     get materials(): Material[] { return [...this._materials]; }
-    get videoFormat(): VideoFormat | null { return this._videoFormat; }
-    get editLevel(): EditLevel | null { return this._editLevel; }
+    get orientation(): VideoOrientation { return this._orientation; }
+    get length(): VideoLength { return this._length; }
+    get level(): EditLevelType { return this._level; }
     get compensation(): Compensation | null { return this._compensation; }
     get description(): string | null { return this._description; }
     get updatedAt(): Date { return this._updatedAt; }
@@ -68,32 +90,38 @@ export class JobOffer {
         this.touch();
     }
 
-    setVideoFormat(videoFormat: VideoFormat): void {
-        this._videoFormat = videoFormat;
+    setName(name: string): void {
+        this._name = name;
         this.touch();
     }
 
-    setEditLevel(editLevel: EditLevel): void {
-        this._editLevel = editLevel;
+    setOrientation(orientation: VideoOrientation): void {
+        this._orientation = orientation;
         this.touch();
     }
 
-    setCompensation(compensation: Compensation): void {
+    setLength(length: VideoLength): void {
+        this._length = length;
+        this.touch();
+    }
+
+    setLevel(level: EditLevelType): void {
+        this._level = level;
+        this.touch();
+    }
+
+    setCompensation(compensation: Compensation | null): void {
         this._compensation = compensation;
         this.touch();
     }
 
-    setDescription(description: string): void {
+    setDescription(description: string | null): void {
         this._description = description;
         this.touch();
     }
 
     isComplete(): boolean {
-        return (
-            this._videoFormat !== null &&
-            this._editLevel !== null &&
-            this._compensation !== null
-        );
+        return this._compensation !== null;
     }
 
     private touch(): void {
