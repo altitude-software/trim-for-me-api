@@ -25,6 +25,11 @@ export class TypeOrmJobOfferRepository implements IJobOfferRepository {
         return JobOfferMapper.toDomain(entity);
     }
 
+    async findAll(): Promise<JobOffer[]> {
+        const entities = await this.repo.find();
+        return entities.map(JobOfferMapper.toDomain);
+    }
+
     async findAllByCreatorId(creatorId: Uuid): Promise<JobOffer[]> {
         const entities = await this.repo.findBy({ creatorId: creatorId.value });
         return entities.map(JobOfferMapper.toDomain);

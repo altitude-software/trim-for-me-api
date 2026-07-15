@@ -22,6 +22,7 @@ import { MaterialTypesController } from './infrastructure/http/material-types.co
 import { CreateJobOfferUseCase } from './application/use-cases/create-job-offer.use-case';
 import { UpdateJobOfferUseCase } from './application/use-cases/update-job-offer.use-case';
 import { GetJobOffersByCreatorUseCase } from './application/use-cases/get-job-offers-by-creator.use-case';
+import { GetAllJobOffersUseCase } from './application/use-cases/get-all-job-offers.use-case';
 import { DeleteJobOfferUseCase } from './application/use-cases/delete-job-offer.use-case';
 import { GetMaterialTypesUseCase } from './application/use-cases/get-material-types.use-case';
 
@@ -42,6 +43,7 @@ import { GetMaterialTypesUseCase } from './application/use-cases/get-material-ty
         CreateJobOfferUseCase,
         UpdateJobOfferUseCase,
         GetJobOffersByCreatorUseCase,
+        GetAllJobOffersUseCase,
         DeleteJobOfferUseCase,
         GetMaterialTypesUseCase,
     ],
