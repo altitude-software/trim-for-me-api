@@ -33,6 +33,6 @@ export class LoginUserUseCase {
         if (!passwordMatch) throw new InvalidCredentialsException();
 
         const payload = { sub: user.id.value, email: user.email.value, role: user.role };
-        return { access_token: this.jwtService.sign(payload) };
+        return { access_token: this.jwtService.sign(payload), email: user.email.value };
     }
 }

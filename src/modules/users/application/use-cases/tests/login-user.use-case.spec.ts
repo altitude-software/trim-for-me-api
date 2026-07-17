@@ -2,6 +2,7 @@ import { LoginUserUseCase, InvalidCredentialsException } from '../login-user.use
 import { User, UserRole } from '../../../domain/entities/user.entity';
 import { Email } from '../../../domain/value-objects/email.vo';
 import { Uuid } from '../../../../../shared/domain/value-objects/uuid.vo';
+import type { JwtService } from '@nestjs/jwt';
 import type { IUserRepository } from '../../../domain/repositories/user.repository';
 import type { IPasswordHasher } from '../../../domain/services/password-hasher.interface';
 
@@ -16,6 +17,10 @@ const mockPasswordHasher: jest.Mocked<IPasswordHasher> = {
     hash: jest.fn(),
     compare: jest.fn(),
 };
+
+const mockJwtService = {
+    sign: jest.fn().mockReturnValue('signed-jwt-token'),
+} as unknown as jest.Mocked<JwtService>;
 
 const makeUser = () =>
     User.reconstitute({
@@ -33,18 +38,18 @@ describe('LoginUserUseCase', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        useCase = new LoginUserUseCase(mockUserRepository, mockPasswordHasher);
+        useCase = new LoginUserUseCase(mockUserRepository, mockPasswordHasher, mockJwtService);
     });
 
-    it('should return a UserResponseDto on valid credentials', async () => {
+    it('should return an access token and the user email on valid credentials', async () => {
         const user = makeUser();
         mockUserRepository.findByEmail.mockResolvedValue(user);
         mockPasswordHasher.compare.mockResolvedValue(true);
 
         const result = await useCase.execute({ email: 'jose@example.com', password: 'plainPassword' });
 
+        expect(result.access_token).toBe('signed-jwt-token');
         expect(result.email).toBe(user.email.value);
-        expect(result.id).toBe(user.id.value);
     });
 
     it('should throw InvalidCredentialsException if email not found', async () => {
