@@ -12,7 +12,7 @@ async function bootstrap() {
       'http://localhost:3001',
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'],
     credentials: true,
   });
 
