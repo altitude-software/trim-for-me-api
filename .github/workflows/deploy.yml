@@ -37,6 +37,18 @@ jobs:
       - name: Start Postgres
         run: docker compose up -d
 
+      - name: Wait for Postgres
+        run: |
+          for i in $(seq 1 30); do
+            docker exec trim-for-me-db pg_isready -U "${{ secrets.DB_USER }}" && exit 0
+            sleep 1
+          done
+          echo "Postgres did not become ready in time" >&2
+          exit 1
+
+      - name: Run migrations
+        run: npm run migration:run
+
       - name: Build
         run: npm run build
 
